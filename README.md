@@ -46,6 +46,7 @@ graph TD
 
 ---
 
+<<<<<<< HEAD
 ## 🧰 Tech Stack
 
 - **Backend**: Python 3.9, Flask, Requests
@@ -60,6 +61,8 @@ graph TD
 ## 📁 Project Structure
 
 ```
+=======
+>>>>>>> 882357cd19d00fb9c0676202c1e5060f733105ce
 weather-app/
 ├── .env                      # API key (never commit this!)
 ├── docker-compose.yml
