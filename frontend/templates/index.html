@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather Broadcast</title>
+    <style>
+        body { font-family: Arial, sans-serif; background: #f0f0f0; text-align: center; padding-top: 50px; }
+        .container { max-width: 500px; margin: auto; background: white; padding: 30px; border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+        input { padding: 10px; width: 70%; font-size: 16px; }
+        button { padding: 10px 20px; font-size: 16px; background: #007bff; color: white; border: none; border-radius: 5px; cursor: pointer; }
+        button:hover { background: #0056b3; }
+        .weather-data { margin-top: 20px; font-size: 18px; }
+        .error { color: red; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🌤️ Weather Broadcast</h1>
+        <p>Enter a city name to get real-time weather</p>
+        <input type="text" id="cityInput" placeholder="e.g., London, Paris, Tokyo">
+        <button onclick="getWeather()">Get Weather</button>
+        <div id="result" class="weather-data"></div>
+    </div>
+
+    <script>
+        function getWeather() {
+            const city = document.getElementById('cityInput').value.trim();
+            if (!city) {
+                document.getElementById('result').innerHTML = '<p class="error">Please enter a city name</p>';
+                return;
+            }
+
+            document.getElementById('result').innerHTML = '<p>Loading...</p>';
+
+            fetch(`/weather?city=${encodeURIComponent(city)}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.error) {
+                        document.getElementById('result').innerHTML = `<p class="error">${data.error}</p>`;
+                        return;
+                    }
+                    document.getElementById('result').innerHTML = `
+                        <h2>${data.city}, ${data.country}</h2>
+                        <p><strong>🌡️ Temperature:</strong> ${data.temperature}°C</p>
+                        <p><strong>🤔 Feels Like:</strong> ${data.feels_like}°C</p>
+                        <p><strong>💧 Humidity:</strong> ${data.humidity}%</p>
+                        <p><strong>📝 Description:</strong> ${data.description}</p>
+                        <img src="https://openweathermap.org/img/wn/${data.icon}@2x.png" alt="weather icon">
+                    `;
+                })
+                .catch(error => {
+                    document.getElementById('result').innerHTML = `<p class="error">Error: ${error.message}</p>`;
+                });
+        }
+
+        // Press Enter key to search
+        document.getElementById('cityInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') getWeather();
+        });
+    </script>
+</body>
+</html>
