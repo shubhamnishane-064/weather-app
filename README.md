@@ -1,12 +1,25 @@
-# weather-app
-🌤️ A two-tier weather app built with Flask, Docker, and Kubernetes. Fetches real-time weather data from OpenWeatherMap with a clean UI.
+# Weather Broadcasting App
 
-📌 Project Idea
-The app allows users to enter a city name and get current weather information (temperature, humidity, description, etc.). It follows a two-tier architecture:
+A simple two-tier weather application that fetches real-time weather data from OpenWeatherMap and displays it in a clean web interface. Built with Python (Flask), Docker, Docker Compose, Kubernetes, and optionally exposed via ngrok.
 
-🏗️ Architecture & Workflow
-High-Level Workflow
-'''mermaid
+---
+
+## 📌 Project Idea
+
+The app allows users to enter a city name and get current weather information (temperature, humidity, description, etc.). It follows a **two-tier architecture**:
+
+- **Frontend**: A Flask web server serving an HTML page. It receives user input and calls the backend API.
+- **Backend**: A Flask REST API that calls the OpenWeatherMap API and returns JSON data.
+
+This separation makes it easy to scale, develop, and deploy each tier independently.
+
+---
+
+## 🏗️ Architecture & Workflow
+
+### High-Level Workflow
+
+```mermaid
 graph LR
     User[👤 User Browser] -->|HTTP :8080| Frontend[Frontend Flask :5000]
     Frontend -->|GET /weather?city=...| Backend[Backend Flask :5001]
@@ -14,9 +27,11 @@ graph LR
     OWM -->|JSON| Backend
     Backend -->|JSON| Frontend
     Frontend -->|HTML + JS| User
-'''
-Kubernetes Deployment (Minikube)
-'''mermaid
+```
+
+### Kubernetes Deployment (Minikube)
+
+```mermaid
 graph TD
     User[👤 User] -->|NodePort :30080| FrontendSvc[Frontend Service]
     FrontendSvc --> FrontendPod1[Frontend Pod 1]
@@ -27,19 +42,26 @@ graph TD
     BackendSvc --> BackendPod2[Backend Pod 2]
     BackendPod1 --> Secret[Secret: weather-secret]
     BackendPod2 --> Secret
-'''
-🧰 Tech Stack
+```
 
--> Backend: Python 3.9, Flask, Requests
--> Frontend: Python 3.9, Flask, HTML/CSS/JavaScript
--> Containerization: Docker, Docker Compose
--> Orchestration: Kubernetes (Minikube)
--> External API: OpenWeatherMap
--> Tunneling (optional): ngrok
+---
 
-📁 Project Structure
+## 🧰 Tech Stack
+
+- **Backend**: Python 3.9, Flask, Requests
+- **Frontend**: Python 3.9, Flask, HTML/CSS/JavaScript
+- **Containerization**: Docker, Docker Compose
+- **Orchestration**: Kubernetes (Minikube)
+- **External API**: OpenWeatherMap
+- **Tunneling (optional)**: ngrok
+
+---
+
+## 📁 Project Structure
+
+```
 weather-app/
-├── .env                      # API key (create the API key .nv file  here )
+├── .env                      # API key (never commit this!)
 ├── docker-compose.yml
 ├── backend/
 │   ├── app.py
@@ -52,19 +74,31 @@ weather-app/
 │   └── templates/
 │       └── index.html
 └── k8s/
-    ├── weather-secret.yaml      # peste the API key here 
+    ├── weather-secret.yaml
     ├── backend-full.yaml
     └── frontend-full.yaml
+```
 
-🔌 Port Mapping
--> Frontend runs on port 5000 inside the container.
--> Backend runs on port 5001 inside the container.
--> When using Docker Compose, you access the app at http://localhost:8080.
--> In Kubernetes, you access it via minikube service frontend-service or minikube svc frontend-service --url # to get the url 
+---
 
-🌐 Ngrok Setup (Optional)
--> ngrok creates a secure tunnel from the public internet to your local machine. This is useful for demoing your app without deploying to a cloud provider.
--> whey can also use AWS like Amazon ECS with AWS Fargate.
+## 🔌 Port Mapping
+
+| Service | Local (Docker Compose) | Kubernetes (Minikube) |
+| :--- | :--- | :--- |
+| **Frontend** | `8080:5000` (host:container) | NodePort `30080` → targetPort `5000` |
+| **Backend** | `5001:5001` | ClusterIP `5001` (internal only) |
+
+- **Frontend** runs on port `5000` inside the container.
+- **Backend** runs on port `5001` inside the container.
+- When using Docker Compose, you access the app at `http://localhost:8080`.
+- In Kubernetes, you access it via `minikube service frontend-service` or `http://<minikube-ip>:30080`.
+
+---
+
+## 🌐 Ngrok Setup (Optional)
+
+ngrok creates a secure tunnel from the public internet to your local machine. This is useful for demoing your app without deploying to a cloud provider.
+
 ### 1. Install ngrok
 Download from [ngrok.com/download](https://ngrok.com/download) or use a package manager.
 
@@ -86,7 +120,9 @@ ngrok will output a public URL (e.g., `https://abc123.ngrok.io`). Share this URL
 
 > **Note**: The free ngrok plan provides random URLs that change each time you restart. Paid plans offer static domains.
 
----## 🚀 How to Run on Your Machine
+---
+
+## 🚀 How to Run on Your Machine
 
 ### Prerequisites
 - Docker & Docker Compose
@@ -101,12 +137,11 @@ cd weather-app
 ```
 
 ### Step 2: Set Up the API Key
-1. Sign up at [OpenWeatherMap](https://openweathermap.org/api) and get your API key.
+1.Sign up at [OpenWeatherMap](https://openweathermap.org/api) and get your API key.
 2. Create a `.env` file in the project root:
    ```
    WEATHER_API_KEY=your_actual_api_key_here
    ```
-3. **Never commit this file to Git.** Add `.env` to `.gitignore`.
 
 ### Step 3: Run with Docker Compose (Fastest)
 ```bash
@@ -195,6 +230,7 @@ Expected response (if key is valid):
   "icon": "01d"
 }
 ```
+---
 
 ## 🙏 Acknowledgements
 
@@ -205,4 +241,4 @@ Expected response (if key is valid):
 
 ---
 
-**Happy coding!** 🚀
+**Happy Learning!** 🚀
