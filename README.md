@@ -37,7 +37,6 @@ graph TD
 -> External API: OpenWeatherMap
 -> Tunneling (optional): ngrok
 
-📁 Project Structure
 weather-app/
 ├── .env                      # API key (create the API key .nv file  here )
 ├── docker-compose.yml
